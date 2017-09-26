@@ -1,0 +1,17 @@
+<xsd:schema targetNamespace="http://www.bicevida.cl/EstadoTarjetaIn" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bicevida.cl/EstadoTarjetaIn">
+   <xsd:element name="MediosPagos">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="EstadoTarjeta" type="EstadoTarjetaType"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="EstadoTarjetaType">
+      <xsd:sequence>
+         <xsd:element name="RutEmpresa" type="xsd:string"/>
+         <xsd:element name="RutTitular" type="xsd:string"/>
+         <xsd:element name="Canal" type="xsd:string"/>
+         <xsd:element name="Usuario" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

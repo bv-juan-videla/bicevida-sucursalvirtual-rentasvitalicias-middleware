@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<definitions name="BV_ConsultaSaldo" targetNamespace="http://xmlns.oracle.com/BV_ConsultaSaldo" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://xmlns.oracle.com/BV_ConsultaSaldo" xmlns:ns1="http://www.bicevida.cl/ConsultaSaldoIn" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="http://www.bicevida.cl/ConsultaSaldoOut" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:client="http://xmlns.oracle.com/BV_ConsultaSaldo">
+   <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.bicevida.cl/ConsultaSaldoIn" schemaLocation="ConsultaSaldoIn.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.bicevida.cl/ConsultaSaldoOut" schemaLocation="ConsultaSaldoOut.xsd"/>
+      </schema>
+   </types>
+   <message name="BV_ConsultaSaldoRequestMessage">
+      <part name="payload" element="ns1:MediosPagos"/>
+   </message>
+   <message name="BV_ConsultaSaldoResponseMessage">
+      <part name="payload" element="ns2:MediosPagos"/>
+   </message>
+   <portType name="BV_ConsultaSaldo">
+      <operation name="process">
+         <input message="tns:BV_ConsultaSaldoRequestMessage"/>
+         <output message="tns:BV_ConsultaSaldoResponseMessage"/>
+      </operation>
+   </portType>
+   <binding name="BV_ConsultaSaldoBinding" type="tns:BV_ConsultaSaldo">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+   </binding>
+   <service name="BV_ConsultaSaldo">
+      <port name="BV_ConsultaSaldoPort" binding="tns:BV_ConsultaSaldoBinding">
+         <soap:address location="http://tucana.bicevida.cl:7777/orabpel/default/BV_ConsultaSaldo/1.0"/>
+      </port>
+   </service>
+   <plnk:partnerLinkType name="BV_ConsultaSaldo">
+      <plnk:role name="BV_ConsultaSaldoProvider">
+         <plnk:portType name="tns:BV_ConsultaSaldo"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+</definitions>

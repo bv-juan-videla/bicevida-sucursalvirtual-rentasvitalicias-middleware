@@ -1,0 +1,17 @@
+<xsd:schema targetNamespace="http://www.bicevida.cl/ConsultaSaldoIn" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bicevida.cl/ConsultaSaldoIn">
+   <xsd:element name="MediosPagos">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="ConsultaSaldo" type="ConsultaSaldoType"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="ConsultaSaldoType">
+      <xsd:sequence>
+         <xsd:element name="RutEmpresa" type="xsd:string"/>
+         <xsd:element name="NumeroCuenta" type="xsd:string"/>
+         <xsd:element name="Canal" type="xsd:string"/>
+         <xsd:element name="Usuario" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

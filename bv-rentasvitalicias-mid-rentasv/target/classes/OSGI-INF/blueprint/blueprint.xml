@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+   This is the OSGi Blueprint XML file defining the Camel context and routes.  Because the file is in the
+   OSGI-INF/blueprint directory inside our JAR, it will be automatically activated as soon as the bundle is installed.
+
+   The root element for any OSGi Blueprint file is 'blueprint' - you also see the namespace definitions for both the Blueprint
+   and the Camel namespaces.
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+    xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/blueprint/cxf               http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd          http://camel.apache.org/schema/blueprint                http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <camelContext id="_creditos-rentasv-context" xmlns="http://camel.apache.org/schema/blueprint">
+        <propertyPlaceholder id="properties" location="utiles.properties"/>
+        <restConfiguration component="restlet" port="{{middleware.rentasv.puerto}}">
+            <!--dataFormatProperty key="prettyPrint" value="true"/-->
+        </restConfiguration>
+        <rest path="/bicevida/rentasvitalicias">
+            <get uri="/service/ping">
+                <route>
+                    <log message="PING OK - rentas vitalicias"/>
+                </route>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/micuenta/{rut}/{numero_persona}/{tipo_persona}">
+                <to uri="direct:obtenerMiCuenta2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/ultimasliquidaciones/{desde}/{hasta}/{rut}">
+                <to uri="direct:obtenerEndLiquidaciones2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/mispolizas/{rut}">
+                <to uri="direct:obtenerEndMisPolizas2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/dosultimasliquidaciones/{rut}">
+                <to uri="direct:obtenerDosUltLiquidaciones2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/asignacionfamiliar/{poliza}">
+                <to uri="direct:obtenerAsignacionFamiliar2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/productosRV/{rut}">
+                <to uri="direct:obtenerProducto2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/correo/{rut}">
+                <to uri="direct:obtenerCorreo2"/>
+            </get>
+        </rest>
+        <!--  Obtener mi cuenta rentasv -->
+        <route id="_route_obtenerDatosmiCuenta">
+            <from id="_direct:obtenerMiCuenta" uri="direct:obtenerMiCuenta2"/>
+            <log id="_log_131" message="RUT      = ${header.rut}"/>
+            <log id="_log_132" message="numero_persona      = ${header.numero_persona}"/>
+            <log id="_log_133" message="tipo_persona      = ${header.tipo_persona}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathDatos">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/${header.rut}/${header.numero_persona}/${header.tipo_persona}</simple>
+            </setHeader>
+            <setBody id="_setBody_1">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_121" message="headers      = ${headers}"/>
+            <to id="callMiCuenta" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyDatos" type="java.lang.String"/>
+        </route>
+        <!--  Obtiene las ultimas liquidaciones -->
+        <route id="_route_obtenerDatosEndLiquidaciones">
+            <from id="_direct:obtenerEndLiquidaciones" uri="direct:obtenerEndLiquidaciones2"/>
+            <log id="_log_L131" message="RUT      = ${header.rut}"/>
+            <log id="_log_L132" message="desde      = ${header.desde}"/>
+            <log id="_log_L133" message="hasta      = ${header.hasta}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathLiquidaciones">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/ultimasliquidaciones/${header.desde}/${header.hasta}/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_Liquidaciones">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_L121" message="headers      = ${headers}"/>
+            <to id="callUltLiquidaciones" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyLiquidaciones" type="java.lang.String"/>
+        </route>
+        <!--  Obtiene Mis Polizas -->
+        <route id="_route_obtenerDatosEndMisPolizas">
+            <from id="_direct:obtenerEndMisPolizas" uri="direct:obtenerEndMisPolizas2"/>
+            <log id="_log_MP131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathMisPolizas">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/mispolizas/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_MisPolizas">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_MP121" message="headers      = ${headers}"/>
+            <to id="callMisPolizas" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyMisPolizas" type="java.lang.String"/>
+        </route>
+        <!--  Obtiene las dos ultimas liquidaciones -->
+        <route id="_route_obtenerDatosDosUltLiquidaciones">
+            <from id="_direct:obtenerDosUltLiquidaciones" uri="direct:obtenerDosUltLiquidaciones2"/>
+            <log id="_log_LDUL131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathDosLiquidaciones">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/dosultimasliquidaciones/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_DosUltLiquidaciones">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_LDUL121" message="headers      = ${headers}"/>
+            <to id="callDosUltLiquidaciones" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyDosUltLiquidaciones" type="java.lang.String"/>
+        </route>
+        <!--   -->
+        <!--  Obtiene los beneficiarios de asignacion familiar -->
+        <route id="_route_obtenerDatosAsignacionFamiliar">
+            <from id="_direct:obtenerAsignacionFamiliar" uri="direct:obtenerAsignacionFamiliar2"/>
+            <log id="_log_AFL131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathAsignacionFamiliar">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/asignacionfamiliar/${header.poliza}</simple>
+            </setHeader>
+            <setBody id="_setBody_AsignacionFamiliar">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_AFL121" message="headers      = ${headers}"/>
+            <to id="callAsignacionFamiliar" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyAsignacionFamiliar" type="java.lang.String"/>
+        </route>
+        <!--  Obtener productos RV -->
+        <route id="_route_obtenerDatosProducto">
+            <from id="_direct:obtenerProducto" uri="direct:obtenerProducto2"/>
+            <log id="_log_PRV131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathProductoRV">
+                <simple>/bv-rentasvitalicias-bs-creditos-1.0.0-SNAPSHOT/rentasvitalicias/creditos/productosRV/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_ProductosRV">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_PRV121" message="headers      = ${headers}"/>
+            <to id="callProductosRV" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyProductosRV" type="java.lang.String"/>
+        </route>
+        <!--  Obtener Correo -->
+        <route id="_route_obtenerDatosCorreo">
+            <from id="_direct:obtenerDatoCorreo" uri="direct:obtenerCorreo2"/>
+            <log id="_log_Cor131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathDatosCorreo">
+                <!--simple>/${header.rut}</simple -->
+                <simple>/bv-rentasvitalicias-bs-email-1.0.0-SNAPSHOT/rentasvitalicias/email/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_correo">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_cor121" message="headers      = ${headers}"/>
+            <to id="callDatosCorreo" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyCorreo" type="java.lang.String"/>
+        </route>
+    </camelContext>
+</blueprint>

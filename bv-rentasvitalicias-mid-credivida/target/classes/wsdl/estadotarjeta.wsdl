@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<definitions name="BV_EstadoTarjeta" targetNamespace="http://xmlns.oracle.com/BV_EstadoTarjeta" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://xmlns.oracle.com/BV_EstadoTarjeta" xmlns:ns1="http://www.bicevida.cl/EstadoTarjetaIn" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/" xmlns:ns2="http://www.bicevida.cl/EstadoTarjetaOut" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:client="http://xmlns.oracle.com/BV_EstadoTarjeta">
+   <types>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.bicevida.cl/EstadoTarjetaIn" schemaLocation="EstadoTarjetaIn.xsd"/>
+      </schema>
+      <schema xmlns="http://www.w3.org/2001/XMLSchema">
+         <import namespace="http://www.bicevida.cl/EstadoTarjetaOut" schemaLocation="EstadoTarjetaOut.xsd"/>
+      </schema>
+   </types>
+   <message name="BV_EstadoTarjetaRequestMessage">
+      <part name="payload" element="ns1:MediosPagos"/>
+   </message>
+   <message name="BV_EstadoTarjetaResponseMessage">
+      <part name="payload" element="ns2:MediosPagos"/>
+   </message>
+   <portType name="BV_EstadoTarjeta">
+      <operation name="process">
+         <input message="tns:BV_EstadoTarjetaRequestMessage"/>
+         <output message="tns:BV_EstadoTarjetaResponseMessage"/>
+      </operation>
+   </portType>
+   <binding name="BV_EstadoTarjetaBinding" type="tns:BV_EstadoTarjeta">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="process">
+         <soap:operation style="document" soapAction="process"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+   </binding>
+   <service name="BV_EstadoTarjeta">
+      <port name="BV_EstadoTarjetaPort" binding="tns:BV_EstadoTarjetaBinding">
+         <soap:address location="http://tucana.bicevida.cl:7777/orabpel/default/BV_EstadoTarjeta/1.0"/>
+      </port>
+   </service>
+   <plnk:partnerLinkType name="BV_EstadoTarjeta">
+      <plnk:role name="BV_EstadoTarjetaProvider">
+         <plnk:portType name="tns:BV_EstadoTarjeta"/>
+      </plnk:role>
+   </plnk:partnerLinkType>
+</definitions>

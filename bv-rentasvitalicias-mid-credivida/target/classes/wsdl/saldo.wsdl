@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://servicios.ws.view.linea_credito_servicios.bicevida.cl/" name="BV_SaldoLCR" targetNamespace="http://servicios.ws.view.linea_credito_servicios.bicevida.cl/">
+<types>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://servicios.ws.view.linea_credito_servicios.bicevida.cl/" elementFormDefault="qualified">
+<complexType name="SaldoLineaCredito">
+<sequence>
+<element name="estado" type="tns:EstadoConsultaSaldo" nillable="true"/>
+<element name="montoAutorizado" type="string" nillable="true"/>
+<element name="montoUtilizado" type="string" nillable="true"/>
+<element name="montoDisponible" type="string" nillable="true"/>
+</sequence>
+</complexType>
+<complexType name="EstadoConsultaSaldo">
+<sequence>
+<element name="codigo" type="string" nillable="true"/>
+<element name="mensaje" type="string" nillable="true"/>
+</sequence>
+</complexType>
+</schema>
+</types>
+<message name="BV_SaldoLCR_saldoLCR">
+<part name="NumeroCuenta" type="xsd:string"/>
+</message>
+<message name="BV_SaldoLCR_saldoLCRResponse">
+<part name="return" type="tns:SaldoLineaCredito"/>
+</message>
+<portType name="BV_SaldoLCR">
+<operation name="saldoLCR" parameterOrder="NumeroCuenta">
+<input message="tns:BV_SaldoLCR_saldoLCR"/>
+<output message="tns:BV_SaldoLCR_saldoLCRResponse"/>
+</operation>
+</portType>
+<binding name="BV_SaldoLCRSoapHttp" type="tns:BV_SaldoLCR">
+<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+<operation name="saldoLCR">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://servicios.ws.view.linea_credito_servicios.bicevida.cl/" parts="NumeroCuenta"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://servicios.ws.view.linea_credito_servicios.bicevida.cl/" parts="return"/>
+</output>
+</operation>
+</binding>
+<service name="BV_SaldoLCR">
+<port name="BV_SaldoLCRSoapHttpPort" binding="tns:BV_SaldoLCRSoapHttp">
+<soap:address location="http://tucana.bicevida.cl:7777/WSLineaCredito/BV_SaldoLCRSoapHttpPort"/>
+</port>
+</service>
+</definitions>

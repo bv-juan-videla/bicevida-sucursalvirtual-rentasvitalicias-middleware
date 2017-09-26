@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+   This is the OSGi Blueprint XML file defining the Camel context and routes.  Because the file is in the
+   OSGI-INF/blueprint directory inside our JAR, it will be automatically activated as soon as the bundle is installed.
+
+   The root element for any OSGi Blueprint file is 'blueprint' - you also see the namespace definitions for both the Blueprint
+   and the Camel namespaces.
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/blueprint/cxf          http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd          http://camel.apache.org/schema/blueprint          http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <bean class="cl.bicevida.beans.processors.CartolaProcessor" id="cartolaPR"/>
+    <bean class="cl.bicevida.beans.processors.SaldoProcessor" id="saldoPR"/>
+    <bean class="cl.bicevida.beans.processors.SaldoLCProcess" id="SaldoLCPR"/>
+    <camelContext id="_rentas-vitalicias-credivida-context" xmlns="http://camel.apache.org/schema/blueprint">
+        <propertyPlaceholder id="properties" location="utiles.properties"/>
+        <restConfiguration bindingMode="json" component="restlet" port="{{middleware.credivida.puerto}}"/>
+        <rest path="/bicevida/credivida">
+            <get uri="/service/ping">
+                <route>
+                    <log message="PING OK - CREDIVIDA"/>
+                </route>
+            </get>
+            <get outType="cl.bicevida.esb.services.expose.data.Cartola"
+                produces="application/json" uri="/cartola/{rut}/{periodo}">
+                <to uri="direct:obtenerCartola"/>
+            </get>
+            <get outType="cl.bicevida.esb.services.expose.data.Cartola"
+                produces="application/json" uri="/saldo/{rut}">
+                <to uri="direct:obtenerSaldoCredivida"/>
+            </get>
+            <get outType="cl.bicevida.esb.services.expose.data.Fde"
+                produces="application/json" uri="/fde/{rut}">
+                <to uri="direct:obtenerCuentaFDE2"/>
+            </get>
+        </rest>
+        <!--  Obtener Numero de cuenta -->
+        <route id="_route_obtenerCartola">
+            <from id="_direct:obtenerCartola" uri="direct:obtenerCartola"/>
+            <log id="_log_CcC131" message="RUT = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathCartola">
+                <simple>/bv-rentasvitalicias-bs-credivida-1.0.0-SNAPSHOT/rentasvitalicias/credivida/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_Cartola">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_CCc121" message="headers      = ${headers}"/>
+            <to id="callCartola" uri="http4:{{backend.credivida.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyCartola" type="java.lang.String"/>
+            <unmarshal id="_unmarshal11">
+                <json library="Jackson" unmarshalTypeName="cl.bicevida.esb.services.data.Credivida"/>
+            </unmarshal>
+            <process id="cpr" ref="cartolaPR"/>
+            <to id="_toC22" uri="mock:result"/>
+        </route>
+        <!--  Obtener Numero de cuenta y saldo credivida -->
+        <route id="_route_obtenerSaldoCredivida">
+            <from id="_direct:obtenerSaldoCredivida" uri="direct:obtenerSaldoCredivida"/>
+            <log id="_log_CSC131" message="RUT = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathSaldoCredivida">
+                <simple>/bv-rentasvitalicias-bs-credivida-1.0.0-SNAPSHOT/rentasvitalicias/credivida/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_SaldoCredivida">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_CSCc121" message="headers      = ${headers}"/>
+            <to id="callSaldoCredivida" uri="http4:{{backend.credivida.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodySaldoCredivida" type="java.lang.String"/>
+            <unmarshal id="_unmarshalSC1">
+                <json library="Jackson" unmarshalTypeName="cl.bicevida.esb.services.data.Credivida"/>
+            </unmarshal>
+            <process id="cpr2" ref="saldoPR"/>
+            <to id="_toC223" uri="mock:result"/>
+        </route>
+        <!--  Obtener saldo fondo de emergencia -->
+        <route id="_route_obtenerCuentaFDE">
+            <from id="_direct:obtenerCuentaFDE" uri="direct:obtenerCuentaFDE2"/>
+            <log id="_log_Cfde131" message="RUT = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathSaldofde">
+                <simple>/bv-rentasvitalicias-bs-credivida-1.0.0-SNAPSHOT/rentasvitalicias/credivida/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_Saldofde">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_CSfde121" message="headers      = ${headers}"/>
+            <to id="callSaldofde" uri="http4:{{backend.credivida.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodySaldofde" type="java.lang.String"/>
+            <unmarshal id="_unmarshalfde1">
+                <json library="Jackson" unmarshalTypeName="cl.bicevida.esb.services.data.Credivida"/>
+            </unmarshal>
+            <process id="cprfde2" ref="SaldoLCPR"/>
+            <to id="_tofde223" uri="mock:result"/>
+        </route>
+    </camelContext>
+</blueprint>

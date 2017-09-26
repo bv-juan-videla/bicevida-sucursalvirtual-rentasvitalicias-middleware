@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<definitions name="WSCartolasCRV" targetNamespace="http://ws.model.credivida.bicevida.cl/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tns0="http://ws.model.credivida.bicevida.cl/types/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.model.credivida.bicevida.cl/" xmlns:tns1="http://www.oracle.com/webservices/internal/literal">
+   <types>
+      <schema targetNamespace="http://www.oracle.com/webservices/internal/literal" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.oracle.com/webservices/internal/literal">
+         <import namespace="http://ws.model.credivida.bicevida.cl/types/"/>
+         <complexType name="list">
+            <complexContent>
+               <extension base="tns:collection">
+                  <sequence/>
+               </extension>
+            </complexContent>
+         </complexType>
+         <complexType name="collection">
+            <sequence>
+               <element name="item" type="anyType" minOccurs="0" maxOccurs="unbounded"/>
+            </sequence>
+         </complexType>
+      </schema>
+      <schema targetNamespace="http://ws.model.credivida.bicevida.cl/types/" elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="http://www.oracle.com/webservices/internal/literal" xmlns:soap11-enc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://ws.model.credivida.bicevida.cl/types/">
+         <import namespace="http://www.oracle.com/webservices/internal/literal"/>
+         <complexType name="RegMovto">
+            <sequence>
+               <element name="diamesano" type="string" nillable="true"/>
+               <element name="corr" type="int"/>
+               <element name="giro" type="int"/>
+               <element name="glosa" type="string" nillable="true"/>
+               <element name="anomesdia" type="string" nillable="true"/>
+               <element name="abono" type="int"/>
+               <element name="saldo" type="int"/>
+            </sequence>
+         </complexType>
+         <complexType name="CartolaOut">
+            <sequence>
+               <element name="mensaje" type="string" nillable="true"/>
+               <element name="mov" type="ns1:list" nillable="true"/>
+               <element name="estado" type="int"/>
+            </sequence>
+         </complexType>
+         <element name="getCartolaUnificadaElement">
+            <complexType>
+               <sequence>
+                  <element name="vperiodo" type="string" nillable="true"/>
+                  <element name="vcta" type="string" nillable="true"/>
+                  <element name="vuser" type="string" nillable="true"/>
+                  <element name="vrut" type="string" nillable="true"/>
+               </sequence>
+            </complexType>
+         </element>
+         <element name="getCartolaUnificadaResponseElement">
+            <complexType>
+               <sequence>
+                  <element name="result" type="tns:CartolaOut" nillable="true"/>
+               </sequence>
+            </complexType>
+         </element>
+      </schema>
+   </types>
+   <message name="WSCartolasCRVPortType_getCartolaUnificada">
+      <part name="parameters" element="tns0:getCartolaUnificadaElement"/>
+   </message>
+   <message name="WSCartolasCRVPortType_getCartolaUnificadaResponse">
+      <part name="parameters" element="tns0:getCartolaUnificadaResponseElement"/>
+   </message>
+   <portType name="WSCartolasCRV">
+      <operation name="getCartolaUnificada">
+         <input message="tns:WSCartolasCRVPortType_getCartolaUnificada"/>
+         <output message="tns:WSCartolasCRVPortType_getCartolaUnificadaResponse"/>
+      </operation>
+   </portType>
+   <binding name="WSCartolasCRVSoapHttp" type="tns:WSCartolasCRV">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <operation name="getCartolaUnificada">
+         <soap:operation soapAction="http://ws.model.credivida.bicevida.cl//getCartolaUnificada"/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+   </binding>
+   <service name="WSCartolasCRV">
+      <port name="WSCartolasCRVSoapHttpPort" binding="tns:WSCartolasCRVSoapHttp">
+         <soap:address location="http://tucana.bicevida.cl:7777/WSCartolasCRV/WSCartolasCRVSoapHttpPort"/>
+      </port>
+   </service>
+</definitions>

@@ -1,0 +1,27 @@
+<xsd:schema targetNamespace="http://www.bicevida.cl/ConsultaSaldoOut" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bicevida.cl/ConsultaSaldoOut">
+   <xsd:element name="MediosPagos">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="Estado" type="EstadoType"/>
+            <xsd:element name="ConsultaSaldo" type="ConsultaSaldoType" minOccurs="0"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="EstadoType">
+      <xsd:sequence>
+         <xsd:element name="EstadoCodigo" type="xsd:string"/>
+         <xsd:element name="Mensaje" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="ConsultaSaldoType">
+      <xsd:sequence>
+         <xsd:element name="NumeroCuenta" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="NombreTitular" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="RetencionDia" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="RetencionMasDias" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SaldoDisponible" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SaldoContable" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="MontoDisponibleLineaCredito" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

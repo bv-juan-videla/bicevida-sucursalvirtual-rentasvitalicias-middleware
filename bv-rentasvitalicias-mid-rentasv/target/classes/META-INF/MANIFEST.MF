@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1506437430164
+Build-Jdk: 1.8.0_51
+Built-By: juan.videla
+Bundle-Blueprint: OSGI-INF/blueprint/blueprint.xml
+Bundle-Description: Servicios Datos Rentas Vitalicias
+Bundle-DocURL: https://bicevida.cl
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
+Bundle-ManifestVersion: 2
+Bundle-Name: [bv-rentasvitalicias-mid-rentasv]
+Bundle-SymbolicName: bv-rentasvitalicias-mid-rentasv
+Bundle-Vendor: Bicevida
+Bundle-Version: 1.0.0.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.osgi.service.blueprint;version="[1.0.0,2.0.0)"
+Tool: Bnd-3.2.0.201605172007

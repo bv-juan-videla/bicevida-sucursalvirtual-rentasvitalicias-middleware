@@ -1,0 +1,38 @@
+<xsd:schema targetNamespace="http://www.bicevida.cl/EstadoTarjetaOut" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.bicevida.cl/EstadoTarjetaOut">
+   <xsd:element name="MediosPagos">
+      <xsd:complexType>
+         <xsd:sequence>
+            <xsd:element name="Estado" type="EstadoType"/>
+            <xsd:element name="EstadoTarjeta" type="EstadoTarjetaType" minOccurs="0"/>
+         </xsd:sequence>
+      </xsd:complexType>
+   </xsd:element>
+   <xsd:complexType name="EstadoType">
+      <xsd:sequence>
+         <xsd:element name="EstadoCodigo" type="xsd:string"/>
+         <xsd:element name="Mensaje" type="xsd:string"/>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="EstadoTarjetaType">
+      <xsd:sequence>
+         <xsd:element name="NumeroCuenta" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="NumeroTarjeta" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="EstadoTarjeta" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Nombre" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ApellidoPaterno" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="ApellidoMaterno" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Direccion" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Comuna" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Ciudad" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="EstadoCivil" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="FechaNacimiento" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Fono" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="Genero" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="SectorEconomico" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="FechaApertura" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="FechaCierre" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="MotivoCierre" type="xsd:string" minOccurs="0"/>
+         <xsd:element name="MontoDisponibleLineaCredito" type="xsd:string" minOccurs="0"/>
+      </xsd:sequence>
+   </xsd:complexType>
+</xsd:schema>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!--
+   This is the OSGi Blueprint XML file defining the Camel context and routes.  Because the file is in the
+   OSGI-INF/blueprint directory inside our JAR, it will be automatically activated as soon as the bundle is installed.
+
+   The root element for any OSGi Blueprint file is 'blueprint' - you also see the namespace definitions for both the Blueprint
+   and the Camel namespaces.
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+    xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/blueprint/cxf               http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd          http://camel.apache.org/schema/blueprint                http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+    <!-- bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
+        <property name="brokerURL" value="tcp://esbdev.bicevida.cl:61616"/>
+        <property name="userName" value="admin"/>
+        <property name="password" value="admin"/>
+        <property name="usePooledConnection" value="false"/>
+    </bean-->
+    <!--bean class="" id="creditosVigentesServices"/-->
+    <!-- <bean class="cl.bicevida.beans.processors.ActivityProcessRequest" id="activityProcessRequest"/>
+    <bean class="cl.bicevida.beans.aggregators.ActualizaBDPAg" id="actualizaBDPAg"/> -->
+    <!--  <camelContext id="_creditos-vigentes-context" xmlns="http://camel.apache.org/schema/blueprint"> -->
+    <bean
+        class="cl.bicevida.beans.processors.ActivityProcessResponse" id="ActivityProcessResponse"/>    
+    <camelContext id="_creditos-vigentes-context" xmlns="http://camel.apache.org/schema/blueprint">
+        <propertyPlaceholder id="properties" location="utiles.properties"/>
+        <dataFormats>
+            <!-- here we define a Json data format with the id jack and that it should use the TestPojo as the class type when
+                 doing unmarshal. The unmarshalTypeName is optional, if not provided Camel will use a Map as the type -->
+            <json id="jackCreditosVigentes" library="Jackson" unmarshalTypeName="cl.bicevida.esb.camel.rest.services2.CreditosVigentes"/>
+        </dataFormats>
+        <restConfiguration component="restlet" port="{{middleware.creditosvigentes.puerto}}">
+            <!--dataFormatProperty key="prettyPrint" value="true"/-->
+        </restConfiguration>
+        <rest path="/bicevida/rentasvitalicias/creditos">
+            <!-- <get uri="/service/ping">
+                <route>
+                    <log message="PING OK - CREDITOS VIGENTES"/>
+                </route>
+            </get> -->
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/vigentes/{rut}">
+                <to uri="direct:obtenerDatosCliente2"/>
+            </get>
+            
+        </rest>
+        <!--  Obtener Lista de Creditos Vigentes -->
+        <route id="_route_obtenerDatosCliente">
+            <from id="_direct:obtenerDatosCliente" uri="direct:obtenerDatosCliente2"/>
+            <log id="_log_131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathDatos">
+                <!--simple>/${header.rut}</simple-->
+                <simple>/bv-rentasvitalicias-bs-creditos-1.0.0-SNAPSHOT/rentasvitalicias/creditos/vigentes/${header.rut}</simple>
+            </setHeader>
+       	    <setBody id="_setBody_1">
+               	<simple>${null}</simple>
+           	</setBody>
+            <log id="_log_121" message="headers      = ${headers}"/>
+            <to id="callDatosCliente" uri="http4:{{backend.creditosvigentes.dominio}}?bridgeEndpoint=true"/>
+            <!-- <convertBodyTo id="_convertBodyDatos" type="java.lang.String"/>
+             <unmarshal id="_jackDatosCliente_2" ref="jackDatosCliente"/> 
+            <process id="_process_2" ref="contactanosProcessResponse"/>   -->
+            <!-- <marshal id="_marshal_11">
+                <json id="jack" library="Jackson"/>
+            </marshal>  -->
+            <marshal ref="jackCreditosVigentes"/>
+    		<to uri="direct:marshalled"/>
+        </route>
+  		<route>
+    		<from uri="direct:marshalled"/>
+    		<unmarshal ref="jackCreditosVigentes"/>
+    		<to uri="direct:contactanosProcessResponse"/>
+  		</route>        
+        
+    </camelContext>
+</blueprint>
