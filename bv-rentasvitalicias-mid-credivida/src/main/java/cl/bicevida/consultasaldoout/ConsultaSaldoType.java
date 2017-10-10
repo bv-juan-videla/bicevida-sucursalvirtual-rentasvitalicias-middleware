@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="SaldoDisponible" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="SaldoContable" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *         &lt;element name="MontoDisponibleLineaCredito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *         &lt;element name="FechaHasta" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -40,7 +41,8 @@ import javax.xml.bind.annotation.XmlType;
     "retencionMasDias",
     "saldoDisponible",
     "saldoContable",
-    "montoDisponibleLineaCredito"
+    "montoDisponibleLineaCredito",
+    "fechahasta"
 })
 public class ConsultaSaldoType {
 
@@ -58,6 +60,8 @@ public class ConsultaSaldoType {
     protected String saldoContable;
     @XmlElement(name = "MontoDisponibleLineaCredito")
     protected String montoDisponibleLineaCredito;
+    @XmlElement(name = "fechahasta", required = false)
+    protected String fechahasta;
 
     /**
      * Obtiene el valor de la propiedad numeroCuenta.
@@ -227,4 +231,13 @@ public class ConsultaSaldoType {
         this.montoDisponibleLineaCredito = value;
     }
 
+	public String getFechahasta() {
+		return fechahasta;
+	}
+
+	public void setFechahasta(String fechahasta) {
+		this.fechahasta = fechahasta;
+	}
+    
+    
 }

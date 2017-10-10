@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.oracle.xmlns.bv_consultasaldo.BVConsultaSaldo;
 import com.oracle.xmlns.bv_estadotarjeta.BVEstadoTarjeta;
 import cl.bicevida.estadotarjetain.EstadoTarjetaType;
+import cl.bicevida.consultasaldoout.ConsultaSaldoType;
 import cl.bicevida.consultasaldoout.EstadoType;
 import cl.bicevida.credivida.model.ws.WSCartolasCRV;
 import cl.bicevida.esb.services.data.Credivida;
@@ -90,7 +91,8 @@ public class SaldoProcessor implements Processor{
 				
 				//actualDia.setFechaActual(getFechaActual());
 				
-				mediosOut.getEstado().setFechahasta(getFechaActual());
+				//mediosOut.getEstado().setFechahasta(getFechaActual());
+				mediosOut.getConsultaSaldo().setFechahasta(getFechaActual());
 				
 				ex.getOut().setBody(mediosOut);
 			}else{
@@ -99,9 +101,13 @@ public class SaldoProcessor implements Processor{
 				EstadoType estadoCod = new EstadoType();
 				estadoCod.setEstadoCodigo("1001");
 				estadoCod.setMensaje("Error Número de cuenta distintas");
-				estadoCod.setFechahasta(getFechaActual());
+				//estadoCod.setFechahasta(getFechaActual());
 				
+				ConsultaSaldoType consultaOut = new cl.bicevida.consultasaldoout.ConsultaSaldoType();
+				//mediosOut.getConsultaSaldo().setFechahasta(getFechaActual());
+				consultaOut.setFechahasta(getFechaActual());
 				mediosOut.setEstado(estadoCod);
+				mediosOut.setConsultaSaldo(consultaOut);
 				
 				ex.getOut().setBody(mediosOut);
 			}
@@ -115,9 +121,13 @@ public class SaldoProcessor implements Processor{
 			EstadoType estadoCod = new EstadoType();
 			estadoCod.setEstadoCodigo("1000");
 			estadoCod.setMensaje("Error general Estado Tarjeta");
-			estadoCod.setFechahasta(getFechaActual());
-			
+			//estadoCod.setFechahasta(getFechaActual());
+
+			ConsultaSaldoType consultaOut = new cl.bicevida.consultasaldoout.ConsultaSaldoType();
+			//mediosOut.getConsultaSaldo().setFechahasta(getFechaActual());
+			consultaOut.setFechahasta(getFechaActual());
 			mediosOut.setEstado(estadoCod);
+			mediosOut.setConsultaSaldo(consultaOut);
 			
 			ex.getOut().setBody(mediosOut);
 		}

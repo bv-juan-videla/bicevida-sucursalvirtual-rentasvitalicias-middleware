@@ -62,6 +62,10 @@
                 <to uri="direct:obtenerProducto2"/>
             </get>
             <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/rentasv/inicioliquidacion/{rut}">
+                <to uri="direct:obtenerInicioLiquidacion2"/>
+            </get>
+            <get outType="java.lang.String" produces="application/json"
                 type="java.lang.String" uri="/correo/{rut}">
                 <to uri="direct:obtenerCorreo2"/>
             </get>
@@ -126,7 +130,20 @@
             <to id="callDosUltLiquidaciones" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
             <convertBodyTo id="_convertBodyDosUltLiquidaciones" type="java.lang.String"/>
         </route>
-        <!--   -->
+        <!--  Obtiene datos de Inicio liquidacion -->
+        <route id="_route_obtenerDatosInicioLiquidacion">
+            <from id="_direct:obtenerInicioLiquidacion" uri="direct:obtenerInicioLiquidacion2"/>
+            <log id="_log_LDIL131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathInicioLiquidacion">
+                <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/inicioliquidacion/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_InicioLiquidacion">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_LDIL121" message="headers      = ${headers}"/>
+            <to id="callInicioLiquidacion" uri="http4:{{backend.rentasv.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyInicioLiquidacion" type="java.lang.String"/>
+        </route>
         <!--  Obtiene los beneficiarios de asignacion familiar -->
         <route id="_route_obtenerDatosAsignacionFamiliar">
             <from id="_direct:obtenerAsignacionFamiliar" uri="direct:obtenerAsignacionFamiliar2"/>

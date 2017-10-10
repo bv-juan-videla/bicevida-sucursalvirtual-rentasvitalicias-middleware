@@ -19,7 +19,6 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence&gt;
  *         &lt;element name="EstadoCodigo" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="Mensaje" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="FechaHasta" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -31,8 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EstadoType", propOrder = {
     "estadoCodigo",
-    "mensaje",
-    "fechahasta"
+    "mensaje"
 })
 public class EstadoType {
 
@@ -40,8 +38,6 @@ public class EstadoType {
     protected String estadoCodigo;
     @XmlElement(name = "Mensaje", required = true)
     protected String mensaje;
-    @XmlElement(name = "fechahasta", required = false)
-    protected String fechahasta;
 
     /**
      * Obtiene el valor de la propiedad estadoCodigo.
@@ -91,12 +87,5 @@ public class EstadoType {
         this.mensaje = value;
     }
 
-	public String getFechahasta() {
-		return fechahasta;
-	}
 
-	public void setFechahasta(String fechahasta) {
-		this.fechahasta = fechahasta;
-	}
-    
 }
