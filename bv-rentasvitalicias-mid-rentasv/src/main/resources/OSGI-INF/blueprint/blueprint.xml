@@ -133,7 +133,7 @@
         <!--  Obtiene datos de Inicio liquidacion -->
         <route id="_route_obtenerDatosInicioLiquidacion">
             <from id="_direct:obtenerInicioLiquidacion" uri="direct:obtenerInicioLiquidacion2"/>
-            <log id="_log_LDIL131" message="RUT      = ${header.rut}"/>
+            <log id="_log_LDDIL131" message="RUT      = ${header.rut}"/>
             <setHeader headerName="CamelHttpPath" id="_CamelHttpPathInicioLiquidacion">
                 <simple>/bv-rentasvitalicias-bs-rentasv-1.0.0-SNAPSHOT/rentasvitalicias/rentasv/inicioliquidacion/${header.rut}</simple>
             </setHeader>

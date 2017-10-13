@@ -60,6 +60,10 @@
                 type="java.lang.String" uri="/disponible/{rut}">
                 <to uri="direct:obtenerCreditoDisponible2"/>
             </get>
+            <get outType="java.lang.String" produces="application/json"
+                type="java.lang.String" uri="/historicos/{rut}">
+                <to uri="direct:obtenerHistoricoCreditos2"/>
+            </get>
         </rest>
         <!--  Obtener Lista de Creditos Vigentes -->
         <route id="_route_obtenerDatosCliente">
@@ -93,6 +97,21 @@
             <log id="_log_CD121" message="headers      = ${headers}"/>
             <to id="callDisponible" uri="http4:{{backend.creditos.dominio}}?bridgeEndpoint=true"/>
             <convertBodyTo id="_convertBodyDisponible" type="java.lang.String"/>
+        </route>
+        <!--  Obtener Lista de Historico Creditos -->
+        <route id="_route_obtenerHistoricoCreditos">
+            <from id="_direct:obtenerHistoricoCreditos" uri="direct:obtenerHistoricoCreditos2"/>
+            <log id="_log_HHC131" message="RUT      = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathHistoricoCreditos">
+                <!--simple>/${header.rut}</simple -->
+                <simple>/bv-rentasvitalicias-bs-creditos-1.0.0-SNAPSHOT/rentasvitalicias/creditos/historicos/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_HistoricoCredito">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_HHC121" message="headers      = ${headers}"/>
+            <to id="callHistoricoCred" uri="http4:{{backend.creditos.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyHistorico" type="java.lang.String"/>
         </route>
     </camelContext>
 </blueprint>

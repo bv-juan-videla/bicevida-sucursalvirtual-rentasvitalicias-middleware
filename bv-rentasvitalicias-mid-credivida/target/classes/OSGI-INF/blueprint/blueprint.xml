@@ -49,6 +49,10 @@
                 produces="application/json" uri="/fde/{rut}">
                 <to uri="direct:obtenerCuentaFDE2"/>
             </get>
+            <get outType="cl.bicevida.esb.services.expose.data.Fde"
+                produces="application/json" uri="/obtienenrofde/{rut}">
+                <to uri="direct:obtenerNroFDE2"/>
+            </get>
         </rest>
         <!--  Obtener Numero de cuenta -->
         <route id="_route_obtenerCartola">
@@ -106,6 +110,25 @@
             </unmarshal>
             <process id="cprfde2" ref="SaldoLCPR"/>
             <to id="_tofde223" uri="mock:result"/>
+        </route>
+        <!--  Obtener nro cuenta fondo de emergencia -->
+        <route id="_route_obtenerNroFDE">
+            <from id="_direct:obtenerNroFDE" uri="direct:obtenerNroFDE2"/>
+            <log id="_log_COfde131" message="RUT = ${header.rut}"/>
+            <setHeader headerName="CamelHttpPath" id="_CamelHttpPathNrofde">
+                <simple>/bv-rentasvitalicias-bs-credivida-1.0.0-SNAPSHOT/rentasvitalicias/credivida/obtienenrofde/${header.rut}</simple>
+            </setHeader>
+            <setBody id="_setBody_Nrofde">
+                <simple>${null}</simple>
+            </setBody>
+            <log id="_log_COfde121" message="headers      = ${headers}"/>
+            <to id="callNrofde" uri="http4:{{backend.credivida.dominio}}?bridgeEndpoint=true"/>
+            <convertBodyTo id="_convertBodyNrofde" type="java.lang.String"/>
+            <unmarshal id="_unmarshalnrofde1">
+                <json library="Jackson" unmarshalTypeName="cl.bicevida.esb.services.data.ObtieneNroFde"/>
+            </unmarshal>
+            <!-- <process id="cprfde2" ref="SaldoLCPR"/>
+            <to id="_tofde223" uri="mock:result"/> -->
         </route>
     </camelContext>
 </blueprint>
